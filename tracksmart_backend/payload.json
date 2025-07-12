@@ -1,0 +1,23 @@
+{
+  "context": {
+    "domain": "retail",
+    "country": "IND",
+    "city": "std:080",
+    "action": "search",
+    "core_version": "1.1.0",
+    "bap_id": "dev.bap.faiz.protocol-server.com.dsep:jobs.BAP",
+    "bap_uri": "http://localhost:5003",
+    "transaction_id": "test-transaction-id",
+    "message_id": "test-message-id",
+    "timestamp": "2023-07-12T00:00:00.000Z"
+  },
+  "message": {
+    "intent": {
+      "item": {
+        "descriptor": {
+          "name": "sample item"
+        }
+      }
+    }
+  }
+}
