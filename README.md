@@ -112,6 +112,6 @@ We welcome contributions! Please see `CONTRIBUTING.md` for details on how to get
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
 
-## 💡 Built by Team DR
+## 💡 Built by Team MCKV
 
 With passion and precision.
