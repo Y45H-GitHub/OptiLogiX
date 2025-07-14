@@ -1,4 +1,4 @@
-Team DR presents: OptiLogix – Our smart Supply Chain Management System developed at the Code Cubicle Hackathon!
+Team MCKV presents: OptiLogix – Our smart Supply Chain Management System developed at the Code Cubicle Hackathon!
 # OptiLogix: Revolutionizing Supply Chain Management
 
 OptiLogix is a comprehensive, cutting-edge solution designed to reimagine and optimize the entire supply chain flow, from supplier to customer. Leveraging advanced technology and seamless design, OptiLogix aims to boost efficiency, enhance collaboration, and drive innovation in the logistics industry.
