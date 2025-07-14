@@ -106,7 +106,7 @@ To set up OptiLogix locally, follow these steps:
 Once all services are running, open your browser and navigate to `http://localhost:3000` (or the specified frontend port).
 
 ## Visual Demonstrations
-![BECKN Flowchart](./frontend/public/BECKN.jpeg)
+![BECKN Flowchart] (https://ibb.co/XdPVPhN)
 
 ## 🤝 Contributing
 
