@@ -107,6 +107,7 @@ Once all services are running, open your browser and navigate to `http://localho
 
 ## Visual Demonstrations
 ![BECKN Flowchart] (https://ibb.co/XdPVPhN)
+![BECKN Architecture] (https://ibb.co/RTXMC3Y0)
 
 ## 🤝 Contributing
 
