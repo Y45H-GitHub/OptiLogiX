@@ -5,12 +5,13 @@ import AskSupplyBot from '../components/AskSupplyBot';
 import DispatcherDashboard from '@/components/DispatcherDashboard';
 import RouteOptimizer from '@/components/RouteOptimizer';
 import SmartChain360Dashboard from '@/components/SmartChain360Dashboard';
+import SurplusRescueNetworkDashboard from '@/components/SurplusRescueNetworkDashboard';
 import Footer from '@/components/Footer';
 
 import { onAuthStateChanged, User as FirebaseUser, signOut } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { Building, Route, Layout, User, Wallet, Package } from 'lucide-react';
+import { Building, Route, Layout, User, Wallet, Package, Recycle } from 'lucide-react';
 import SimpleModal from '../components/SimpleModal';
 import LogisticsPage from './LogisticsPage';
 import { Toaster } from 'sonner';
@@ -46,7 +47,7 @@ const Index = () => {
   useEffect(() => {
     const checkMetamask = async () => {
       try {
-        const provider = await detectEthereumProvider({silent: true, mustBeMetaMask: false});
+        const provider = await detectEthereumProvider({ silent: true, mustBeMetaMask: false });
         if (provider) {
           setHasMetamask(true);
           // Check if already connected
@@ -94,7 +95,7 @@ const Index = () => {
 
   const connectWallet = async () => {
     try {
-      const provider = await detectEthereumProvider({silent: true, mustBeMetaMask: false});
+      const provider = await detectEthereumProvider({ silent: true, mustBeMetaMask: false });
       if (!provider) {
         alert('Metamask is not installed. Please install it to connect your wallet.');
         return;
@@ -168,31 +169,38 @@ const Index = () => {
         <AskSupplyBot />
 
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="flex w-full max-w-3xl mx-auto mb-8 bg-white/90 backdrop-blur-md border-2 border-emerald-200 shadow-2xl rounded-2xl p-2 h-auto gap-4">
-            <TabsTrigger 
-              value="dashboard" 
-              className="flex-1 flex flex-col items-center gap-2 px-4 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+          <TabsList className="flex w-full max-w-4xl mx-auto mb-8 bg-white/90 backdrop-blur-md border-2 border-emerald-200 shadow-2xl rounded-2xl p-2 h-auto gap-3">
+            <TabsTrigger
+              value="dashboard"
+              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
             >
               <Layout className="w-6 h-6" />
               <span className="text-center">Dashboard</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="dispatcher" 
-              className="flex-1 flex flex-col items-center gap-2 px-4 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+            <TabsTrigger
+              value="dispatcher"
+              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
             >
               <Building className="w-6 h-6" />
               <span className="text-center">Dock Dispatcher</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="route-optimizer" 
-              className="flex-1 flex flex-col items-center gap-2 px-4 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+            <TabsTrigger
+              value="route-optimizer"
+              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
             >
               <Route className="w-6 h-6" />
               <span className="text-center">Route Optimizer</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="logistics" 
-              className="flex-1 flex flex-col items-center gap-2 px-4 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+            <TabsTrigger
+              value="surplus-rescue"
+              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+            >
+              <Recycle className="w-6 h-6" />
+              <span className="text-center">Surplus Rescue</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="logistics"
+              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
             >
               <Building className="w-6 h-6" />
               <span className="text-center">Logistics</span>
@@ -209,6 +217,20 @@ const Index = () => {
 
           <TabsContent value="route-optimizer" className="focus-visible:outline-none">
             <RouteOptimizer />
+          </TabsContent>
+
+          <TabsContent value="surplus-rescue" className="focus-visible:outline-none">
+            <div className="space-y-6">
+              <div className="text-center">
+                <button
+                  onClick={() => navigate('/surplus-rescue')}
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200"
+                >
+                  Open Full Surplus Rescue Network
+                </button>
+              </div>
+              <SurplusRescueNetworkDashboard />
+            </div>
           </TabsContent>
 
           <TabsContent value="logistics" className="focus-visible:outline-none">
