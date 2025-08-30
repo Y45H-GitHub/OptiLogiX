@@ -163,6 +163,45 @@ async function initializeDatabase() {
       console.log('Initial dock data inserted.');
     }
 
+    // Insert initial truck_queue data if table is empty
+    // Clear existing truck_queue data and insert initial data
+    await pool.execute('DELETE FROM truck_queue');
+    console.log('Existing truck_queue data cleared.');
+
+    // Insert initial truck_queue data
+    // No longer checking if table is empty, as we just cleared it.
+    // const [truckQueueRows] = await pool.execute('SELECT COUNT(*) as count FROM truck_queue');
+    // if (truckQueueRows[0].count === 0) {
+      console.log('`truck_queue` table is empty. Inserting initial data.');
+      await pool.execute(
+        'INSERT INTO truck_queue (truckId, arrivalTime, appointmentId) VALUES (?, ?, ?)',
+        ['TRUCK001', new Date(), 1]
+      );
+      await pool.execute(
+        'INSERT INTO truck_queue (truckId, arrivalTime, appointmentId) VALUES (?, ?, ?)',
+        ['TRUCK002', new Date(), 2]
+      );
+      console.log('Initial `truck_queue` data inserted.');
+
+    // Insert initial appointments data if table is empty
+    // Clear existing appointments data and insert initial data
+    await pool.execute('DELETE FROM appointments');
+    console.log('Existing appointments data cleared.');
+
+    // Insert initial appointments data
+    // No longer checking if table is empty, as we just cleared it.
+    // const [appointmentRows] = await pool.execute('SELECT COUNT(*) as count FROM appointments');
+    // if (appointmentRows[0].count === 0) {
+      console.log('`appointments` table is empty. Inserting initial data.');
+      await pool.execute(
+        'INSERT INTO appointments (truckId, supplier, scheduledTime, status, type) VALUES (?, ?, ?, ?, ?)',
+        ['TRUCK001', 'Supplier A', new Date(), 'scheduled', 'loading']
+      );
+      await pool.execute(
+        'INSERT INTO appointments (truckId, supplier, scheduledTime, status, type) VALUES (?, ?, ?, ?, ?)',
+        ['TRUCK002', 'Supplier B', new Date(), 'scheduled', 'unloading']
+      );
+      console.log('Initial `appointments` data inserted.');
 
   } catch (error) {
     console.error('Error initializing database:', error);

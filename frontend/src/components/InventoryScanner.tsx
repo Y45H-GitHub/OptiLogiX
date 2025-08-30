@@ -55,6 +55,7 @@ const InventoryScanner: React.FC<InventoryScannerProps> = ({ onScan }) => {
                     console.error(error);
                   }}
                   constraints={{ facingMode: 'environment' }}
+                  sound="/beep.mp3"
                 />
               </div>
               <button
