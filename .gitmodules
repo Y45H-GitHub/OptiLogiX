@@ -1,3 +1,4 @@
 [submodule "frontend"]
-	path = frontend
+	path = frontend-repo
 	url = https://github.com/DEBDEEP-BANERJ2E/frontend_Optilogix.git
+	branch = main
