@@ -19,6 +19,7 @@ import BlockchainProvenancePage from "./pages/BlockchainProvenancePage";
 import LogisticsPage from "./pages/LogisticsPage";
 import SurplusRescueNetworkDashboardDemo from "./pages/SurplusRescueNetworkDashboardDemo";
 import SurplusRescueNetworkPage from "./pages/SurplusRescueNetworkPage";
+import RouteOptimizerDemo from "./pages/RouteOptimizerDemo";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/logistics" element={<LogisticsPage />} />
           <Route path="/surplus-rescue" element={<SurplusRescueNetworkPage />} />
           <Route path="/surplus-rescue-dashboard-demo" element={<SurplusRescueNetworkDashboardDemo />} />
+          <Route path="/route-optimizer-demo" element={<RouteOptimizerDemo />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
