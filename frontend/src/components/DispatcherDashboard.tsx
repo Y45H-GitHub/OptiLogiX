@@ -54,10 +54,10 @@ const DispatcherDashboard: React.FC = () => {
     try {
       const [docksRes, queueRes, appointmentsRes, recentAssignmentsRes] = await Promise.all([
 
-        axios.get<Dock[]>('http://localhost:5000/api/docks'),
-        axios.get<TruckInQueue[]>('http://localhost:5000/api/truck-queue'),
-        axios.get<Appointment[]>('http://localhost:5000/api/appointments'),
-        axios.get<Appointment[]>('http://localhost:5000/api/recent-assignments'),
+        axios.get<Dock[]>('http://localhost:3001/api/dispatcher/dock-status'),
+        axios.get<TruckInQueue[]>('http://localhost:3001/api/dispatcher/truck-queue'),
+        axios.get<Appointment[]>('http://localhost:3001/api/dispatcher/appointments'),
+        axios.get<Appointment[]>('http://localhost:3001/api/dispatcher/recent-assignments'),
 
       ]);
       console.log('Docks data from API:', docksRes.data);
@@ -86,7 +86,7 @@ const DispatcherDashboard: React.FC = () => {
   const handleTruckArrive = async (truckId: string) => {
     try {
       // Fetch the latest appointment for the truckId
-      const appointmentRes = await axios.get<Appointment[]>(`http://localhost:5000/api/appointments?truckId=${truckId}`);
+      const appointmentRes = await axios.get<Appointment[]>(`http://localhost:3001/api/dispatcher/appointments?truckId=${truckId}`);
       const latestAppointment = appointmentRes.data[0]; // Assuming the first one is the latest
 
       if (!latestAppointment) {
@@ -94,7 +94,7 @@ const DispatcherDashboard: React.FC = () => {
         return;
       }
 
-      await axios.post('http://localhost:5000/api/trucks/arrive', { truckId, appointmentId: latestAppointment.id });
+      await axios.post('http://localhost:3001/api/trucks/arrive', { truckId, appointmentId: latestAppointment.id });
       toast.success(`Truck ${truckId} marked as arrived!`);
       fetchDashboardData();
     } catch (error: unknown) {
@@ -114,7 +114,7 @@ const DispatcherDashboard: React.FC = () => {
 
     try {
       // Fetch the latest appointment for the selected truck
-      const appointmentRes = await axios.get<Appointment[]>(`http://localhost:5000/api/appointments?truckId=${truckId}`);
+      const appointmentRes = await axios.get<Appointment[]>(`http://localhost:3001/api/dispatcher/appointments?truckId=${truckId}`);
       const latestAppointment = appointmentRes.data[0]; // Assuming the first one is the latest
 
       if (!latestAppointment) {
@@ -122,7 +122,7 @@ const DispatcherDashboard: React.FC = () => {
         return;
       }
 
-      await axios.post('http://localhost:5000/api/dispatcher/assign', { truckId, dockId, appointmentId: latestAppointment.id });
+      await axios.post('http://localhost:3001/api/dispatcher/assign', { truckId, dockId, appointmentId: latestAppointment.id });
       toast.success(`Truck ${truckId} assigned to Dock ${dockId}!`);
       fetchDashboardData();
     } catch (error: unknown) {
@@ -134,7 +134,7 @@ const DispatcherDashboard: React.FC = () => {
 
   const handleUpdateAssignmentStatus = async (appointmentId: number, status: Appointment['status']) => {
     try {
-      await axios.post('http://localhost:5000/api/assignments/update-status', { appointmentId, status });
+      await axios.post('http://localhost:3001/api/assignments/update-status', { appointmentId, status });
       toast.success(`Assignment ${appointmentId} status updated to ${status}!`);
       fetchDashboardData();
     } catch (error: unknown) {
@@ -146,7 +146,7 @@ const DispatcherDashboard: React.FC = () => {
 
   const handleTruckDepart = async (truckId: string) => {
     try {
-      await axios.post('http://localhost:5000/api/trucks/depart', { truckId });
+      await axios.post('http://localhost:3001/api/trucks/depart', { truckId });
       toast.success(`Truck ${truckId} departed!`);
       fetchDashboardData();
     } catch (error: unknown) {

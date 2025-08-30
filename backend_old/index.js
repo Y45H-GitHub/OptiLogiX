@@ -25,7 +25,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/dispatcher', dispatcherRoutes);
 app.use('/api/driver', driverRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api', appointmentRoutes); // For /api/trucks/arrive and /api/assignments/update-status
+// app.use('/api', appointmentRoutes); // For /api/trucks/arrive and /api/assignments/update-status
 
 
 
