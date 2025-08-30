@@ -24,6 +24,8 @@ import { surplusNetworkService } from '@/services/surplusNetworkService';
 import { SurplusInventoryItem, InventoryRequest, NetworkAnalytics } from '@/types/surplusNetwork';
 import { DemoScenario } from '@/services/surplusNetworkDemoService';
 import SurplusNetworkDemoSelector from './SurplusNetworkDemoSelector';
+import SmartQuickActions from './SmartQuickActions';
+import { SmartAction } from '@/services/smartActionsService';
 
 const SurplusRescueNetworkDashboard = () => {
     const [analytics, setAnalytics] = useState<NetworkAnalytics | null>(null);
@@ -105,6 +107,36 @@ const SurplusRescueNetworkDashboard = () => {
 
     const handleScenarioChange = (scenarioId: string) => {
         setCurrentScenario(scenarioId);
+    };
+
+    const handleSmartAction = (action: SmartAction) => {
+        console.log('Smart action triggered:', action);
+
+        // Handle different action types
+        switch (action.type) {
+            case 'browse_overstock':
+                if (action.data?.category) {
+                    console.log(`Browsing overstock in category: ${action.data.category}`);
+                    // In a real app: navigate to marketplace with overstock filter
+                }
+                break;
+            case 'browse_understock':
+                if (action.data?.category) {
+                    console.log(`Finding items for understock category: ${action.data.category}`);
+                    // In a real app: navigate to marketplace with understock filter
+                }
+                break;
+            case 'connect_network':
+                if (action.data?.participantId) {
+                    console.log(`Connecting with participant: ${action.data.companyName}`);
+                    // In a real app: navigate to network connection page
+                }
+                break;
+            case 'generate_report':
+                console.log('Generating network analysis report');
+                // In a real app: navigate to reports page or open modal
+                break;
+        }
     };
 
     const formatCurrency = (amount: number) => {
@@ -258,50 +290,8 @@ const SurplusRescueNetworkDashboard = () => {
                 </Card>
             </div>
 
-            {/* Quick Actions */}
-            <Card className="bg-white border border-gray-200 shadow-sm">
-                <CardHeader className="pb-4">
-                    <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                        <Activity className="w-5 h-5 text-gray-700" />
-                        Quick Actions
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-wrap gap-3">
-                        <Button
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                            size="default"
-                        >
-                            <Plus className="w-4 h-4 mr-2" />
-                            List Surplus Inventory
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                            size="default"
-                        >
-                            <Search className="w-4 h-4 mr-2" />
-                            Browse Marketplace
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                            size="default"
-                        >
-                            <Network className="w-4 h-4 mr-2" />
-                            Manage Network
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                            size="default"
-                        >
-                            <BarChart3 className="w-4 h-4 mr-2" />
-                            View Reports
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+            {/* Smart Quick Actions */}
+            <SmartQuickActions onActionClick={handleSmartAction} />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Surplus Listings */}
