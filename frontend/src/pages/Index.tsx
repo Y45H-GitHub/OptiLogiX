@@ -7,12 +7,13 @@ import RouteOptimizer from '@/components/RouteOptimizer';
 import SmartChain360Dashboard from '@/components/SmartChain360Dashboard';
 import SurplusRescueNetworkDashboard from '@/components/SurplusRescueNetworkDashboard';
 import SmartActionsDemo from './SmartActionsDemo';
+import DigitalTwinPage from './DigitalTwinPage';
 import Footer from '@/components/Footer';
 
 import { onAuthStateChanged, User as FirebaseUser, signOut } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { Building, Route, Layout, User, Wallet, Package, Recycle, Lightbulb } from 'lucide-react';
+import { Building, Route, Layout, User, Wallet, Package, Recycle, Lightbulb, Network } from 'lucide-react';
 import SimpleModal from '../components/SimpleModal';
 import LogisticsPage from './LogisticsPage';
 import { Toaster } from 'sonner';
@@ -207,6 +208,13 @@ const Index = () => {
               <span className="text-center">Smart Actions</span>
             </TabsTrigger>
             <TabsTrigger
+              value="digital-twin"
+              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+            >
+              <Network className="w-6 h-6" />
+              <span className="text-center">Digital Twin</span>
+            </TabsTrigger>
+            <TabsTrigger
               value="logistics"
               className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
             >
@@ -243,6 +251,10 @@ const Index = () => {
 
           <TabsContent value="smart-actions" className="focus-visible:outline-none">
             <SmartActionsDemo />
+          </TabsContent>
+
+          <TabsContent value="digital-twin" className="focus-visible:outline-none">
+            <DigitalTwinPage />
           </TabsContent>
 
           <TabsContent value="logistics" className="focus-visible:outline-none">

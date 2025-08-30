@@ -52,8 +52,8 @@ const DemoPresentationHelper: React.FC<DemoPresentationHelperProps> = ({ isVisib
                                     key={index}
                                     onClick={() => setActivePhase(index)}
                                     className={`p-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center justify-center ${activePhase === index
-                                            ? 'bg-purple-600 text-white shadow-md'
-                                            : 'bg-white text-gray-600 hover:bg-purple-50 hover:text-purple-600'
+                                        ? 'bg-purple-600 text-white shadow-md'
+                                        : 'bg-white text-gray-600 hover:bg-purple-50 hover:text-purple-600'
                                         }`}
                                 >
                                     {phaseIcons[phase.phase as keyof typeof phaseIcons]}
@@ -127,7 +127,7 @@ const DemoPresentationHelper: React.FC<DemoPresentationHelperProps> = ({ isVisib
                 </div>
             )}
 
-            <style jsx>{`
+            <style>{`
                 @keyframes slideIn {
                     from {
                         opacity: 0;

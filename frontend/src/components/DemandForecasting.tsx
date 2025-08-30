@@ -481,7 +481,7 @@ const DemandForecasting: React.FC = () => {
 
     return (
         <>
-            <style jsx>{`
+            <style>{`
                 @keyframes slideIn {
                     from {
                         opacity: 0;
