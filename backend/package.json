@@ -1,19 +1,20 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Firebase backend for OptiLogix",
-  "main": "index.js",
+  "description": "",
+  "main": "supabase.js",
   "scripts": {
-    "start": "node index.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^17.0.0",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
-
-    "mysql2": "^3.14.1"
+    "pg": "^8.16.3"
   }
 }
