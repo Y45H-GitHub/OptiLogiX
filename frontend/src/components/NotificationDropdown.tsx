@@ -77,7 +77,9 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
 
         try {
             showToast('Processing approval...', 'info');
-            const emailStatus = await approveOrder(orderId);
+            // TODO: Replace 'Current User' with actual logged-in user's name
+            const approverName = 'Current User'; 
+            const emailStatus = await approveOrder(orderId, approverName, notification.orderDetails.justification);
             markAsRead(notificationId);
 
             showToast(`Order ${orderId} approved successfully!`, 'success');
@@ -102,7 +104,9 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
 
         try {
             showToast('Processing rejection...', 'info');
-            const emailStatus = await rejectOrder(orderId, reason);
+            // TODO: Replace 'Current User' with actual logged-in user's name
+            const approverName = 'Current User'; 
+            const emailStatus = await rejectOrder(orderId, approverName, reason);
             markAsRead(notificationId);
             setShowRejectInput(prev => ({ ...prev, [orderId]: false }));
             setRejectionReason(prev => ({ ...prev, [orderId]: '' }));
@@ -173,11 +177,11 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
 
         switch (emailStatus.status) {
             case 'sent':
-                return <Mail className="w-3 h-3 text-green-600" title="Email sent successfully" />;
+                return <Mail className="w-3 h-3 text-green-600" />;
             case 'failed':
-                return <MailX className="w-3 h-3 text-red-600" title={`Email failed: ${emailStatus.error}`} />;
+                return <MailX className="w-3 h-3 text-red-600" />;
             case 'pending':
-                return <Clock className="w-3 h-3 text-yellow-600" title="Email pending" />;
+                return <Clock className="w-3 h-3 text-yellow-600" />;
             default:
                 return null;
         }

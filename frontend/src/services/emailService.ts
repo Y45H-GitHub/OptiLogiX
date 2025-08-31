@@ -1,5 +1,4 @@
 import { PurchaseOrder } from '../contexts/NotificationContext';
-
 export interface EmailNotification {
     to: string[];
     subject: string;
@@ -23,58 +22,105 @@ class EmailService {
     private emailQueue: EmailNotification[] = [];
     private emailHistory: EmailStatus[] = [];
 
-    // Simulate email sending with enhanced console logging for demo
-    async sendEmail(notification: EmailNotification): Promise<EmailStatus> {
+    constructor() {
+        // Simulate email sending with a delay
+        setInterval(() => {
+            if (this.emailQueue.length > 0) {
+                const notification = this.emailQueue.shift();
+                if (notification) {
+                    this.processEmail(notification);
+                }
+            }
+        }, 1000);
+    }
+
+    private async processEmail(notification: EmailNotification): Promise<void> {
         const emailId = `email-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-        console.log('🔄 Sending email notification...', {
+        let status: EmailStatus = {
             id: emailId,
-            to: notification.to,
-            subject: notification.subject,
-            template: notification.template
-        });
-
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
-
-        // Simulate occasional failures (5% chance for demo)
-        const shouldFail = Math.random() < 0.05;
-
-        const status: EmailStatus = {
-            id: emailId,
-            status: shouldFail ? 'failed' : 'sent',
+            status: 'pending',
             timestamp: new Date(),
             recipient: notification.to.join(', '),
-            error: shouldFail ? 'SMTP connection timeout - simulated failure' : undefined
         };
 
-        // Enhanced console logging for demo purposes
-        if (shouldFail) {
-            console.error('❌ EMAIL DELIVERY FAILED:', {
-                id: emailId,
-                to: notification.to,
-                subject: notification.subject,
-                template: notification.template,
-                error: status.error,
-                timestamp: status.timestamp.toISOString()
-            });
-        } else {
-            console.log('✅ EMAIL SENT SUCCESSFULLY:', {
-                id: emailId,
-                to: notification.to,
-                subject: notification.subject,
-                template: notification.template,
-                orderDetails: {
-                    orderId: notification.data.orderDetails.id,
-                    productName: notification.data.orderDetails.productName,
-                    quantity: notification.data.orderDetails.quantity,
-                    totalCost: `$${notification.data.orderDetails.totalCost.toFixed(2)}`,
-                    supplier: notification.data.orderDetails.supplier,
-                    requestedBy: notification.data.orderDetails.requestedBy
+        try {
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 500));
+
+            console.log(`
+=== SIMULATING EMAIL SEND ===
+To: ${notification.to.join(', ')}
+Subject: ${notification.subject}
+Content:
+${this.generateEmailContent(notification)}
+=============================
+            `);
+
+            status = {
+                ...status,
+                status: 'sent',
+            };
+        } catch (error: any) {
+            console.error('Error simulating email send:', error);
+            status = {
+                ...status,
+                status: 'failed',
+                error: error.message,
+            };
+        }
+
+        this.emailHistory.push(status);
+    }
+
+    async sendEmail(notification: EmailNotification): Promise<EmailStatus> {
+        const emailId = `email-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const to = notification.to.join(', ');
+        const subject = notification.subject;
+        const body = this.generateEmailContent(notification);
+
+        const emailData = {
+            to: to,
+            subject: subject,
+            body: body
+        };
+
+        let status: EmailStatus;
+
+        try {
+            const response = await fetch('http://localhost:5002/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                emailContent: this.generateEmailContent(notification),
-                timestamp: status.timestamp.toISOString()
+                body: JSON.stringify(emailData)
             });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                status = {
+                    id: emailId,
+                    status: 'sent',
+                    timestamp: new Date(),
+                    recipient: to
+                };
+            } else {
+                status = {
+                    id: emailId,
+                    status: 'failed',
+                    timestamp: new Date(),
+                    recipient: to,
+                    error: result.message || 'Unknown error'
+                };
+            }
+        } catch (error: any) {
+            status = {
+                id: emailId,
+                status: 'failed',
+                timestamp: new Date(),
+                recipient: to,
+                error: error.message || 'Network error'
+            };
         }
 
         this.emailHistory.push(status);
@@ -192,13 +238,13 @@ Please review the rejection reason and resubmit if necessary.
     private getRequestorEmail(requestorName: string): string {
         // In a real app, this would lookup the user's email from a database
         const emailMap: { [key: string]: string } = {
-            'John Smith': 'john.smith@company.com',
-            'Sarah Johnson': 'sarah.johnson@company.com',
-            'Mike Chen': 'mike.chen@company.com',
-            'Lisa Wang': 'lisa.wang@company.com'
+            'John Smith': 'yashchmckv@gmail.com',
+            'Sarah Johnson': 'yashchmckv@gmail.com',
+            'Mike Chen': 'yashchmckv@gmail.com',
+            'Lisa Wang': 'yashchmckv@gmail.com'
         };
 
-        return emailMap[requestorName] || `${requestorName.toLowerCase().replace(' ', '.')}@company.com`;
+        return emailMap[requestorName] || `yashchmckv@gmail.com`;
     }
 
     // Get email queue status

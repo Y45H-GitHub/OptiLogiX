@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { emailService, EmailStatus } from '../services/emailService';
 
 export interface Notification {
@@ -41,8 +41,8 @@ interface NotificationActions {
     addNotification: (notification: Omit<Notification, 'id'>) => void;
     markAsRead: (id: string) => void;
     markAllAsRead: () => void;
-    approveOrder: (orderId: string, comments?: string) => Promise<EmailStatus>;
-    rejectOrder: (orderId: string, reason: string) => Promise<EmailStatus>;
+    approveOrder: (orderId: string, approverName: string, comments?: string) => Promise<EmailStatus>;
+    rejectOrder: (orderId: string, approverName: string, reason: string) => Promise<EmailStatus>;
     createPurchaseOrder: (order: PurchaseOrder) => Promise<EmailStatus>;
     resetNotifications: () => void;
 }
@@ -147,7 +147,7 @@ const mockNotifications: Notification[] = [
     // Current pending orders
     ...mockPurchaseOrders.map(order => ({
         id: `notif-${order.id}`,
-        type: 'approval_request',
+        type: 'approval_request' as const,
         title: `Purchase Order Approval Required`,
         message: `${order.productName} - ${order.quantity} units - $${order.totalCost.toFixed(2)}`,
         timestamp: order.requestDate,
@@ -173,7 +173,7 @@ const mockNotifications: Notification[] = [
             id: 'email-h001',
             status: 'sent' as const,
             timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000),
-            recipient: 'alex.rodriguez@company.com'
+            recipient: 'yashchmckv@gmail.com'
         }
     },
     // Historical rejected order
@@ -193,7 +193,7 @@ const mockNotifications: Notification[] = [
             id: 'email-h002',
             status: 'sent' as const,
             timestamp: new Date(Date.now() - 30 * 60 * 60 * 1000),
-            recipient: 'emma.thompson@company.com'
+            recipient: 'yashchmckv@gmail.com'
         }
     }
 ];
@@ -226,7 +226,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         );
     };
 
-    const approveOrder = async (orderId: string, comments?: string): Promise<EmailStatus> => {
+    const approveOrder = useCallback(async (orderId: string, approverName: string, comments?: string): Promise<EmailStatus> => {
         const notification = notifications.find(n => n.orderId === orderId);
         if (!notification) {
             throw new Error('Order not found');
@@ -235,7 +235,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         // Send approval email
         const emailStatus = await emailService.sendApprovalConfirmation(
             notification.orderDetails,
-            'Current User'
+            approverName
         );
 
         setNotifications(prev =>
@@ -244,7 +244,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                     return {
                         ...notification,
                         type: 'approved',
-                        actionBy: 'Current User',
+                        actionBy: approverName,
                         actionDate: new Date(),
                         isRead: true,
                         emailStatus
@@ -255,9 +255,9 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         );
 
         return emailStatus;
-    };
+    }, [notifications]);
 
-    const rejectOrder = async (orderId: string, reason: string): Promise<EmailStatus> => {
+    const rejectOrder = useCallback(async (orderId: string, approverName: string, reason: string): Promise<EmailStatus> => {
         const notification = notifications.find(n => n.orderId === orderId);
         if (!notification) {
             throw new Error('Order not found');
@@ -266,7 +266,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         // Send rejection email
         const emailStatus = await emailService.sendRejectionNotification(
             notification.orderDetails,
-            'Current User',
+            approverName,
             reason
         );
 
@@ -276,7 +276,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                     return {
                         ...notification,
                         type: 'rejected',
-                        actionBy: 'Current User',
+                        actionBy: approverName,
                         actionDate: new Date(),
                         isRead: true,
                         emailStatus
@@ -287,7 +287,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         );
 
         return emailStatus;
-    };
+    }, [notifications]);
 
     const createPurchaseOrder = async (order: PurchaseOrder): Promise<EmailStatus> => {
         // Send approval request email
