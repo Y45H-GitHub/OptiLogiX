@@ -117,13 +117,16 @@ export const useSupplyChainInteractions = ({
         const clickedNode = findNodeAtPosition(x, y);
 
         if (clickedNode) {
+            console.log('Node clicked:', clickedNode.name, clickedNode.metadata);
             setSelectedNode(clickedNode);
             onNodeClick?.(clickedNode);
 
             if (onNodeSelect && clickedNode.metadata) {
+                console.log('Calling onNodeSelect with:', clickedNode.metadata);
                 onNodeSelect(clickedNode.metadata as SupplyChainNode);
             }
         } else {
+            console.log('Empty space clicked, clearing selection');
             setSelectedNode(null);
             // Clear external selection when clicking on empty space
             if (onNodeSelect) {

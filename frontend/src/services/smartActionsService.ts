@@ -408,13 +408,32 @@ class SmartActionsService {
         success: boolean;
         message: string;
         transfersCreated: number;
+        connections?: Array<{
+            category: string;
+            items: SurplusInventoryItem[];
+        }>;
     }> {
         try {
+            // Try to use the new connectWithStore method from surplusNetworkService
+            try {
+                const result = await surplusNetworkService.connectWithStore(participantId, categories);
+                if (result.success) {
+                    return {
+                        ...result,
+                        transfersCreated: result.connections?.reduce((sum, conn) => sum + conn.items.length, 0) || 0
+                    };
+                }
+            } catch (e) {
+                // Fall back to original implementation if new method fails
+                console.log('connectWithStore failed, falling back to original implementation');
+            }
+            
             // Simulate connection process
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Create mock transfers for the categories
             let transfersCreated = 0;
+            const connectionsByCategory: Record<string, SurplusInventoryItem[]> = {};
 
             for (const category of categories) {
                 // Find items we can provide in this category
@@ -433,13 +452,25 @@ class SmartActionsService {
                     // Update item status (in a real app, this would be persisted)
                     await surplusNetworkService.updateSurplusItemStatus(itemToTransfer.id, 'reserved');
                     transfersCreated++;
+                    
+                    // Track connections by category
+                    if (!connectionsByCategory[category]) {
+                        connectionsByCategory[category] = [];
+                    }
+                    connectionsByCategory[category].push(itemToTransfer);
                 }
             }
+            
+            const connections = Object.entries(connectionsByCategory).map(([category, items]) => ({
+                category,
+                items
+            }));
 
             return {
                 success: true,
                 message: `Successfully connected with participant. ${transfersCreated} transfers initiated.`,
-                transfersCreated
+                transfersCreated,
+                connections
             };
         } catch (error) {
             return {
@@ -457,8 +488,13 @@ class SmartActionsService {
         success: boolean;
         message: string;
         requestId?: string;
+        potentialMatches?: SurplusInventoryItem[];
+        matchFound?: boolean;
     }> {
         try {
+            // Find potential matches before creating the request
+            const potentialMatches = await surplusNetworkService.findPotentialMatches(category, quantity);
+            
             // Find an available item in the category to request
             const inventory = await surplusNetworkService.getSurplusInventory();
             const availableItem = inventory.find(item =>
@@ -466,10 +502,7 @@ class SmartActionsService {
             );
 
             if (!availableItem) {
-                return {
-                    success: false,
-                    message: `No available items found in ${category} category.`
-                };
+                throw new Error(`No available items found in ${category} category.`);
             }
 
             // Create the request
@@ -486,7 +519,9 @@ class SmartActionsService {
             return {
                 success: true,
                 message: `Request created successfully for ${quantity} ${category} items.`,
-                requestId: request.id
+                requestId: request.id,
+                potentialMatches,
+                matchFound: potentialMatches.length > 0
             };
         } catch (error) {
             return {

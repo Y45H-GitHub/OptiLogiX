@@ -56,6 +56,7 @@ const DigitalTwinDashboard = () => {
     };
 
     const handleNodeSelect = (node: SupplyChainNode | null) => {
+        console.log('DigitalTwinDashboard received node selection:', node);
         setSelectedNode(node);
     };
 

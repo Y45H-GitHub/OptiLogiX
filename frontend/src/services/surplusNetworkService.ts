@@ -353,6 +353,31 @@ export class SurplusNetworkService {
         await new Promise(resolve => setTimeout(resolve, 300));
         return dataStore.getSurplusInventory();
     }
+    
+    // Find potential matches for understock items by category
+    async findPotentialMatches(category: string, quantity: number): Promise<SurplusInventoryItem[]> {
+        await new Promise(resolve => setTimeout(resolve, 250));
+        const inventory = dataStore.getSurplusInventory();
+        const participants = dataStore.getNetworkParticipants();
+        
+        // Find available items in the requested category with sufficient quantity
+        const matches = inventory.filter(item => 
+            item.category === category && 
+            item.status === 'available' && 
+            item.quantityAvailable >= quantity
+        );
+        
+        // Ensure each item has the correct participant information
+        return matches.map(item => {
+            // Make sure the participantId is valid
+            if (!participants.some(p => p.id === item.participantId)) {
+                // If not, assign a random participant for demo purposes
+                const randomParticipant = participants[Math.floor(Math.random() * participants.length)];
+                return { ...item, participantId: randomParticipant.id };
+            }
+            return item;
+        });
+    }
 
     // Search surplus inventory with filters
     async searchSurplusInventory(filters: InventoryFilters): Promise<SurplusInventoryItem[]> {
@@ -388,6 +413,66 @@ export class SurplusNetworkService {
         }
 
         return newRequest;
+    }
+    
+    // Connect directly with a store that has complementary needs
+    async connectWithStore(storeId: string, categories: string[]): Promise<{
+        success: boolean;
+        message: string;
+        connections?: Array<{
+            category: string;
+            items: SurplusInventoryItem[];
+        }>;
+    }> {
+        await new Promise(resolve => setTimeout(resolve, 400));
+        
+        try {
+            const inventory = dataStore.getSurplusInventory();
+            const connections: Array<{
+                category: string;
+                items: SurplusInventoryItem[];
+            }> = [];
+            
+            // For each category, find matching items from the specified store
+            for (const category of categories) {
+                const matchingItems = inventory.filter(item => 
+                    item.category === category && 
+                    item.status === 'available' && 
+                    item.participantId === storeId
+                );
+                
+                if (matchingItems.length > 0) {
+                    connections.push({
+                        category,
+                        items: matchingItems
+                    });
+                    
+                    // Reserve the items for this connection
+                    for (const item of matchingItems) {
+                        dataStore.updateSurplusItemStatus(item.id, 'reserved');
+                    }
+                }
+            }
+            
+            if (connections.length === 0) {
+                return {
+                    success: false,
+                    message: `No matching items found from store ${storeId} for the requested categories.`
+                };
+            }
+            
+            return {
+                success: true,
+                message: `Successfully connected with store for ${connections.length} categories.`,
+                connections
+            };
+        } catch (error) {
+            console.error('Error connecting with store:', error);
+            return {
+                success: false,
+                message: 'Failed to connect with store.'
+            };
+        }
     }
 
     // Update surplus item status
