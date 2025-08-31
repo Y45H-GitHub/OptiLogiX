@@ -36,6 +36,177 @@ export const DEMO_FACILITIES: SupplyChainFacility[] = [
         address: 'City Centre, Durgapur, West Bengal 713216',
         detourTime: 12,
         services: ['bulk_storage', 'packaging', 'quality_control', 'cold_storage']
+    },
+    {
+        id: 'store_southcity_001',
+        name: 'South City Mall',
+        type: 'partner_store',
+        location: { lat: 22.5056, lng: 88.3577 },
+        address: '375, Prince Anwar Shah Road, Kolkata',
+        detourTime: 10,
+        services: ['retail', 'food_court', 'entertainment']
+    },
+    {
+        id: 'store_acropolis_001',
+        name: 'Acropolis Mall',
+        type: 'partner_store',
+        location: { lat: 22.4994, lng: 88.3701 },
+        address: '1858, Rajdanga Main Road, Kolkata',
+        detourTime: 12,
+        services: ['retail', 'dining', 'entertainment']
+    },
+    {
+        id: 'store_quest_001',
+        name: 'Quest Mall',
+        type: 'partner_store',
+        location: { lat: 22.5089, lng: 88.3666 },
+        address: '33, Syed Amir Ali Avenue, Kolkata',
+        detourTime: 8,
+        services: ['luxury_retail', 'dining', 'entertainment']
+    },
+    {
+        id: 'store_citycentre_001',
+        name: 'City Centre Salt Lake',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.4139 },
+        address: 'DC Block, Sector 1, Salt Lake',
+        detourTime: 15,
+        services: ['retail', 'food_court', 'entertainment']
+    },
+    {
+        id: 'store_mani_001',
+        name: 'Mani Square Mall',
+        type: 'partner_store',
+        location: { lat: 22.5928, lng: 88.3701 },
+        address: '164/1, Maniktala Main Road, Kolkata',
+        detourTime: 10,
+        services: ['retail', 'dining', 'entertainment']
+    },
+    {
+        id: 'store_axis_001',
+        name: 'Axis Mall',
+        type: 'partner_store',
+        location: { lat: 22.5783, lng: 88.4333 },
+        address: 'New Town, Kolkata',
+        detourTime: 12,
+        services: ['retail', 'food_court', 'entertainment']
+    },
+    {
+        id: 'store_elgin_001',
+        name: 'Elgin Road Shopping Complex',
+        type: 'partner_store',
+        location: { lat: 22.5417, lng: 88.3533 },
+        address: '1, Elgin Road, Kolkata',
+        detourTime: 8,
+        services: ['retail', 'dining']
+    },
+    {
+        id: 'store_newmarket_001',
+        name: 'New Market',
+        type: 'partner_store',
+        location: { lat: 22.5606, lng: 88.3533 },
+        address: 'Lindsay Street, Kolkata',
+        detourTime: 10,
+        services: ['retail', 'street_food']
+    },
+    {
+        id: 'store_gariahat_001',
+        name: 'Gariahat Market',
+        type: 'partner_store',
+        location: { lat: 22.5200, lng: 88.3666 },
+        address: 'Gariahat Road, Kolkata',
+        detourTime: 12,
+        services: ['retail', 'street_food']
+    },
+    {
+        id: 'store_hawkers_001',
+        name: 'Hawkers Corner',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Park Street, Kolkata',
+        detourTime: 15,
+        services: ['street_food', 'entertainment']
+    },
+    {
+        id: 'store_phoenix_001',
+        name: 'Phoenix Marketcity',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.4139 },
+        address: 'New Town, Kolkata',
+        detourTime: 15,
+        services: ['retail', 'food_court', 'entertainment']
+    },
+    {
+        id: 'store_merlin_001',
+        name: 'Merlin Homeland',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Ballygunge, Kolkata',
+        detourTime: 10,
+        services: ['retail', 'dining']
+    },
+    {
+        id: 'store_metro_001',
+        name: 'Metropolis Mall',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Hiland Park, Kolkata',
+        detourTime: 12,
+        services: ['retail', 'dining']
+    },
+    {
+        id: 'store_central_001',
+        name: 'Central Plaza',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Ballygunge, Kolkata',
+        detourTime: 8,
+        services: ['retail', 'dining']
+    },
+    {
+        id: 'store_treasure_001',
+        name: 'Treasure Island',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Salt Lake, Kolkata',
+        detourTime: 15,
+        services: ['retail', 'food_court']
+    },
+    {
+        id: 'store_vardaan_001',
+        name: 'Vardaan Market',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Ballygunge, Kolkata',
+        detourTime: 10,
+        services: ['retail', 'dining']
+    },
+    {
+        id: 'store_esplanade_001',
+        name: 'Esplanade Market',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Esplanade, Kolkata',
+        detourTime: 12,
+        services: ['retail', 'street_food']
+    },
+    {
+        id: 'store_hatibagan_001',
+        name: 'Hatibagan Market',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Hatibagan, Kolkata',
+        detourTime: 8,
+        services: ['retail', 'street_food']
+    },
+    {
+        id: 'store_bailey_001',
+        name: 'Bailey Road Market',
+        type: 'partner_store',
+        location: { lat: 22.5726, lng: 88.3639 },
+        address: 'Bailey Road, Kolkata',
+        detourTime: 10,
+        services: ['retail', 'street_food']
     }
 ];
 
