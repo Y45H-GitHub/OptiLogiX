@@ -6,6 +6,9 @@ import DispatcherDashboard from '@/components/DispatcherDashboard';
 import RouteOptimizer from '@/components/RouteOptimizer';
 import SmartChain360Dashboard from '@/components/SmartChain360Dashboard';
 import SurplusRescueNetworkDashboard from '@/components/SurplusRescueNetworkDashboard';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import NotificationBell from '@/components/NotificationBell';
+import NotificationDropdown from '@/components/NotificationDropdown';
 
 import DigitalTwinPage from './DigitalTwinPage';
 import Footer from '@/components/Footer';
@@ -33,6 +36,7 @@ declare global {
 const Index = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [balance, setBalance] = useState<BigNumberish | null>(null);
@@ -127,203 +131,212 @@ const Index = () => {
     alert('Metamask disconnected.');
   };
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
-      <div className="absolute top-10 right-10 flex items-center space-x-4">
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setIsProfileModalOpen(true)}>
-          {user && user.photoURL && user.photoURL !== '' ? (
-            <img
-              src={user.photoURL}
-              alt="Profile"
-              className="w-8 h-8 rounded-full"
-              onError={(e) => {
-                console.error('Error loading profile picture:', e.currentTarget.src);
-                e.currentTarget.src = '/placeholder.svg'; // Fallback to a generic image if loading fails
-              }}
-              referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
+    <NotificationProvider>
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+        <div className="absolute top-10 right-10 flex items-center space-x-4">
+          <div className="relative">
+            <NotificationBell onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)} />
+            <NotificationDropdown
+              isOpen={isNotificationDropdownOpen}
+              onClose={() => setIsNotificationDropdownOpen(false)}
             />
-          ) : (
-            <User className="w-6 h-6 text-gray-600" />
-          )}
-          <span className="text-gray-800 font-medium">{user ? (user.displayName || user.email) : 'Profile'}</span>
-        </div>
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setIsWalletModalOpen(true)}>
-          {walletAddress ? (
-            <img src="/metamask-connected.png" alt="Wallet Connected" className="w-6 h-6" /> // Replace with your connected icon
-          ) : (
-            <img src="/metamask-disconnected.jpeg" alt="Wallet Disconnected" className="w-6 h-6" /> // Replace with your disconnected icon
-          )}
-          <span className="text-gray-800 font-medium">Wallet</span>
-        </div>
-      </div>
-      <div className="container mx-auto px-4 py-6 flex-grow">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <img src="/favicon.png" alt="OptiLogix Logo" className="h-12 w-12 mr-3" />
-            <h1
-              className="text-5xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent py-2 cursor-pointer"
-              onClick={() => navigate('/')}
-            >
-              OptiLogix
-            </h1>
+          </div>
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setIsProfileModalOpen(true)}>
+            {user && user.photoURL && user.photoURL !== '' ? (
+              <img
+                src={user.photoURL}
+                alt="Profile"
+                className="w-8 h-8 rounded-full"
+                onError={(e) => {
+                  console.error('Error loading profile picture:', e.currentTarget.src);
+                  e.currentTarget.src = '/placeholder.svg'; // Fallback to a generic image if loading fails
+                }}
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
+              />
+            ) : (
+              <User className="w-6 h-6 text-gray-600" />
+            )}
+            <span className="text-gray-800 font-medium">{user ? (user.displayName || user.email) : 'Profile'}</span>
+          </div>
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setIsWalletModalOpen(true)}>
+            {walletAddress ? (
+              <img src="/metamask-connected.png" alt="Wallet Connected" className="w-6 h-6" /> // Replace with your connected icon
+            ) : (
+              <img src="/metamask-disconnected.jpeg" alt="Wallet Disconnected" className="w-6 h-6" /> // Replace with your disconnected icon
+            )}
+            <span className="text-gray-800 font-medium">Wallet</span>
           </div>
         </div>
-        <AskSupplyBot />
-
-        <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="flex w-full max-w-4xl mx-auto mb-8 bg-white/90 backdrop-blur-md border-2 border-emerald-200 shadow-2xl rounded-2xl p-2 h-auto gap-3">
-            <TabsTrigger
-              value="dashboard"
-              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
-            >
-              <Layout className="w-6 h-6" />
-              <span className="text-center">Dashboard</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="dispatcher"
-              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
-            >
-              <Building className="w-6 h-6" />
-              <span className="text-center">Dock Dispatcher</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="route-optimizer"
-              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
-            >
-              <Route className="w-6 h-6" />
-              <span className="text-center">Route Optimizer</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="surplus-rescue"
-              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
-            >
-              <Recycle className="w-6 h-6" />
-              <span className="text-center">Surplus Rescue</span>
-            </TabsTrigger>
-
-            <TabsTrigger
-              value="digital-twin"
-              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
-            >
-              <Network className="w-6 h-6" />
-              <span className="text-center">Digital Twin</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="logistics"
-              className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
-            >
-              <Building className="w-6 h-6" />
-              <span className="text-center">Logistics</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="dashboard" className="focus-visible:outline-none">
-            <SmartChain360Dashboard />
-          </TabsContent>
-
-          <TabsContent value="dispatcher" className="focus-visible:outline-none">
-            <DispatcherDashboard />
-          </TabsContent>
-
-          <TabsContent value="route-optimizer" className="focus-visible:outline-none">
-            <RouteOptimizer />
-          </TabsContent>
-
-          <TabsContent value="surplus-rescue" className="focus-visible:outline-none">
-            <div className="space-y-6">
-              <div className="text-center">
-                <button
-                  onClick={() => navigate('/surplus-rescue')}
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200"
-                >
-                  Open Full Surplus Rescue Network
-                </button>
-              </div>
-              <SurplusRescueNetworkDashboard />
+        <div className="container mx-auto px-4 py-6 flex-grow">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center mb-4">
+              <img src="/favicon.png" alt="OptiLogix Logo" className="h-12 w-12 mr-3" />
+              <h1
+                className="text-5xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent py-2 cursor-pointer"
+                onClick={() => navigate('/')}
+              >
+                OptiLogix
+              </h1>
             </div>
-          </TabsContent>
-
-
-
-          <TabsContent value="digital-twin" className="focus-visible:outline-none">
-            <DigitalTwinPage />
-          </TabsContent>
-
-          <TabsContent value="logistics" className="focus-visible:outline-none">
-            <LogisticsPage />
-          </TabsContent>
-        </Tabs>
-      </div>
-      <Footer />
-      <Toaster />
-
-      <SimpleModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
-        title="User Profile"
-      >
-        {user ? (
-          <div className="text-center">
-            {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-24 h-24 rounded-full mx-auto mb-4" referrerPolicy="no-referrer" crossOrigin="anonymous" />}
-            <p className="text-lg font-semibold">Name: {user.displayName || 'N/A'}</p>
-            <p className="text-lg font-semibold">Email: {user.email || 'N/A'}</p>
-            <p className="text-gray-600 mt-2">This is your user profile information.</p>
-            <p className="text-gray-600">You can add more details here.</p>
-            <button
-              onClick={() => {
-                signOut(auth).then(() => {
-                  console.log('User signed out successfully');
-                  setIsProfileModalOpen(false);
-                  navigate('/auth');
-                }).catch((error) => {
-                  console.error('Error signing out:', error);
-                  alert('Failed to sign out. Please try again.');
-                });
-              }}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-            >
-              Sign Out
-            </button>
           </div>
-        ) : (
-          <p>Please sign in to view your profile information.</p>
-        )}
-      </SimpleModal>
+          <AskSupplyBot />
 
-      <SimpleModal
-        isOpen={isWalletModalOpen}
-        onClose={() => setIsWalletModalOpen(false)}
-        title="Blockchain Wallet"
-      >
-        <div className="text-center">
-          {walletAddress ? (
-            <div className="break-words">
-              <p className="text-lg font-semibold">Connected Account:</p>
-              <p className="text-md text-gray-700">{walletAddress}</p>
-              {balance && (
-                <p className="text-md text-gray-700 mt-2">Balance: {formatEther(balance)} ETH</p>
-              )}
+          <Tabs defaultValue="dashboard" className="w-full">
+            <TabsList className="flex w-full max-w-4xl mx-auto mb-8 bg-white/90 backdrop-blur-md border-2 border-emerald-200 shadow-2xl rounded-2xl p-2 h-auto gap-3">
+              <TabsTrigger
+                value="dashboard"
+                className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+              >
+                <Layout className="w-6 h-6" />
+                <span className="text-center">Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="dispatcher"
+                className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+              >
+                <Building className="w-6 h-6" />
+                <span className="text-center">Dock Dispatcher</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="route-optimizer"
+                className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+              >
+                <Route className="w-6 h-6" />
+                <span className="text-center">Route Optimizer</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="surplus-rescue"
+                className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+              >
+                <Recycle className="w-6 h-6" />
+                <span className="text-center">Surplus Rescue</span>
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="digital-twin"
+                className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+              >
+                <Network className="w-6 h-6" />
+                <span className="text-center">Digital Twin</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="logistics"
+                className="flex-1 flex flex-col items-center gap-2 px-3 py-4 data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white transition-all duration-500 rounded-xl font-semibold text-sm h-full min-h-[80px]"
+              >
+                <Building className="w-6 h-6" />
+                <span className="text-center">Logistics</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="dashboard" className="focus-visible:outline-none">
+              <SmartChain360Dashboard />
+            </TabsContent>
+
+            <TabsContent value="dispatcher" className="focus-visible:outline-none">
+              <DispatcherDashboard />
+            </TabsContent>
+
+            <TabsContent value="route-optimizer" className="focus-visible:outline-none">
+              <RouteOptimizer />
+            </TabsContent>
+
+            <TabsContent value="surplus-rescue" className="focus-visible:outline-none">
+              <div className="space-y-6">
+                <div className="text-center">
+                  <button
+                    onClick={() => navigate('/surplus-rescue')}
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200"
+                  >
+                    Open Full Surplus Rescue Network
+                  </button>
+                </div>
+                <SurplusRescueNetworkDashboard />
+              </div>
+            </TabsContent>
+
+
+
+            <TabsContent value="digital-twin" className="focus-visible:outline-none">
+              <DigitalTwinPage />
+            </TabsContent>
+
+            <TabsContent value="logistics" className="focus-visible:outline-none">
+              <LogisticsPage />
+            </TabsContent>
+          </Tabs>
+        </div>
+        <Footer />
+        <Toaster />
+
+        <SimpleModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          title="User Profile"
+        >
+          {user ? (
+            <div className="text-center">
+              {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-24 h-24 rounded-full mx-auto mb-4" referrerPolicy="no-referrer" crossOrigin="anonymous" />}
+              <p className="text-lg font-semibold">Name: {user.displayName || 'N/A'}</p>
+              <p className="text-lg font-semibold">Email: {user.email || 'N/A'}</p>
+              <p className="text-gray-600 mt-2">This is your user profile information.</p>
+              <p className="text-gray-600">You can add more details here.</p>
               <button
-                onClick={disconnectWallet}
+                onClick={() => {
+                  signOut(auth).then(() => {
+                    console.log('User signed out successfully');
+                    setIsProfileModalOpen(false);
+                    navigate('/auth');
+                  }).catch((error) => {
+                    console.error('Error signing out:', error);
+                    alert('Failed to sign out. Please try again.');
+                  });
+                }}
                 className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
               >
-                Disconnect Metamask
+                Sign Out
               </button>
             </div>
           ) : (
-            <button
-              onClick={connectWallet}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-            >
-              Connect Metamask
-            </button>
+            <p>Please sign in to view your profile information.</p>
           )}
-          {!hasMetamask && (
-            <p className="text-red-500 mt-4">Metamask not detected. Please install Metamask to use this feature.</p>
-          )}
-        </div>
-      </SimpleModal>
-    </div>
+        </SimpleModal>
+
+        <SimpleModal
+          isOpen={isWalletModalOpen}
+          onClose={() => setIsWalletModalOpen(false)}
+          title="Blockchain Wallet"
+        >
+          <div className="text-center">
+            {walletAddress ? (
+              <div className="break-words">
+                <p className="text-lg font-semibold">Connected Account:</p>
+                <p className="text-md text-gray-700">{walletAddress}</p>
+                {balance && (
+                  <p className="text-md text-gray-700 mt-2">Balance: {formatEther(balance)} ETH</p>
+                )}
+                <button
+                  onClick={disconnectWallet}
+                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                >
+                  Disconnect Metamask
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={connectWallet}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              >
+                Connect Metamask
+              </button>
+            )}
+            {!hasMetamask && (
+              <p className="text-red-500 mt-4">Metamask not detected. Please install Metamask to use this feature.</p>
+            )}
+          </div>
+        </SimpleModal>
+      </div>
+    </NotificationProvider>
   );
 };
 

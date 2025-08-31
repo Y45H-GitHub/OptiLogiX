@@ -44,6 +44,7 @@ interface NotificationActions {
     approveOrder: (orderId: string, comments?: string) => Promise<EmailStatus>;
     rejectOrder: (orderId: string, reason: string) => Promise<EmailStatus>;
     createPurchaseOrder: (order: PurchaseOrder) => Promise<EmailStatus>;
+    resetNotifications: () => void;
 }
 
 type NotificationContextType = NotificationState & NotificationActions;
@@ -310,6 +311,10 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         return emailStatus;
     };
 
+    const resetNotifications = () => {
+        setNotifications(mockNotifications);
+    };
+
     const value: NotificationContextType = {
         notifications,
         unreadCount,
@@ -319,7 +324,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         markAllAsRead,
         approveOrder,
         rejectOrder,
-        createPurchaseOrder
+        createPurchaseOrder,
+        resetNotifications
     };
 
     return (
