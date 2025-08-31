@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { describe, test, beforeEach, expect, vi } from 'vitest';
 import Index from '../../pages/Index';
-import { vi } from 'vitest';
 
 // Mock Firebase auth
 vi.mock('firebase/auth', () => ({

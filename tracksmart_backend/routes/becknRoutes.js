@@ -33,4 +33,74 @@ router.post('/on_search', async (req, res) => {
   }
 });
 
+// BECKN Order Tracking endpoint
+router.get('/track/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    // Mock BECKN tracking response data for demo purposes
+    const mockBecknTrackingData = {
+      orderId: orderId,
+      becknTransactionId: `beckn_txn_${orderId}_${Date.now()}`,
+      status: 'in_transit',
+      deliveryPartner: {
+        id: 'dp_001',
+        name: 'Rajesh Kumar',
+        phone: '+91-9876543210',
+        email: 'rajesh.kumar@delivery.com',
+        rating: 4.8,
+        vehicle: {
+          type: 'motorcycle',
+          number: 'KA-01-AB-1234',
+          model: 'Honda Activa'
+        },
+        photo: 'https://example.com/photos/rajesh.jpg'
+      },
+      currentLocation: {
+        latitude: 12.9716 + (Math.random() - 0.5) * 0.01,
+        longitude: 77.5946 + (Math.random() - 0.5) * 0.01,
+        address: 'Near Koramangala 5th Block, Bangalore',
+        timestamp: new Date().toISOString(),
+        accuracy: 10
+      },
+      estimatedDelivery: new Date(Date.now() + 45 * 60 * 1000).toISOString(), // 45 minutes from now
+      trackingHistory: [
+        {
+          status: 'order_placed',
+          timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
+          location: 'Restaurant: Spice Garden',
+          description: 'Order confirmed and being prepared'
+        },
+        {
+          status: 'picked_up',
+          timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+          location: 'Restaurant: Spice Garden',
+          description: 'Order picked up by delivery partner'
+        },
+        {
+          status: 'in_transit',
+          timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+          location: 'En route to delivery address',
+          description: 'Order is on the way to your location'
+        }
+      ],
+      lastUpdated: new Date().toISOString()
+    };
+
+    console.log(`[BECKN TRACKING] Order ${orderId} tracked successfully`);
+    res.json({
+      success: true,
+      data: mockBecknTrackingData
+    });
+
+  } catch (err) {
+    console.error('[ERROR /track]', err.message);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to track order via BECKN',
+      fallback: true
+    });
+  }
+});
+
 module.exports = router;

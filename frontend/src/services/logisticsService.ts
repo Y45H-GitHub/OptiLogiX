@@ -90,7 +90,8 @@ const mockOrders: Order[] = [
         ],
         travelCompany: 'FastTrack Logistics',
         deliveryId: 'FTL-789456123',
-        priority: 'medium'
+        priority: 'medium',
+        isBecknEnabled: true
     },
     {
         id: 'ORD-002',
@@ -146,7 +147,8 @@ const mockOrders: Order[] = [
         ],
         travelCompany: 'Express Delivery Co',
         deliveryId: 'EDC-456789012',
-        priority: 'high'
+        priority: 'high',
+        isBecknEnabled: false
     },
     {
         id: 'ORD-003',
@@ -190,7 +192,8 @@ const mockOrders: Order[] = [
         travelCompany: 'Heavy Freight Express',
         deliveryId: 'HFE-123456789',
         priority: 'low',
-        notes: 'Customer changed mind about purchase'
+        notes: 'Customer changed mind about purchase',
+        isBecknEnabled: false
     },
     {
         id: 'ORD-004',
@@ -245,7 +248,8 @@ const mockOrders: Order[] = [
         ],
         travelCompany: 'Quick Ship Solutions',
         deliveryId: 'QSS-987654321',
-        priority: 'urgent'
+        priority: 'urgent',
+        isBecknEnabled: true
     },
     {
         id: 'ORD-005',
@@ -289,7 +293,8 @@ const mockOrders: Order[] = [
         travelCompany: 'Furniture Express',
         deliveryId: 'FE-147258369',
         priority: 'medium',
-        notes: 'Customer moved to new office location'
+        notes: 'Customer moved to new office location',
+        isBecknEnabled: false
     }
 ];
 
