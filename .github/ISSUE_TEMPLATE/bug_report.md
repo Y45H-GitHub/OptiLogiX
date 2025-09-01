@@ -1,9 +1,10 @@
 ---
 name: Bug Report
 about: Report a reproducible bug
-title: '[Bug]: '
-labels: 'bug'
-assignees: ''
+title: "[Bug]: "
+labels: bug, enhancement
+assignees: DEBDEEP-BANERJ2E
+
 ---
 
 ## Describe the bug
