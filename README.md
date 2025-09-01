@@ -35,8 +35,8 @@ To set up OptiLogix locally, follow these steps:
 
 ### Prerequisites
 
-*   Node.js (for frontend)
-*   Python (for backend)
+*   React-Typescript (for frontend)
+*   Node.js and Python (for backend)
 *   Docker (recommended for easy setup of services)
 
 ### Steps
@@ -83,7 +83,7 @@ To set up OptiLogix locally, follow these steps:
 
     ```bash
     cd backend
-    python app.py # or appropriate command
+    npm start # or appropriate command
     cd ..
     ```
 
@@ -99,7 +99,7 @@ To set up OptiLogix locally, follow these steps:
 
     ```bash
     cd frontend
-    npm start # or yarn start
+    npm run dev 
     cd ..
     ```
 
@@ -118,7 +118,7 @@ We welcome contributions! Please see `CONTRIBUTING.md` for details on how to get
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
 
-## 💡 Built by Team MCKV
+## 💡 Built by Team
 
 With passion and precision.
 
