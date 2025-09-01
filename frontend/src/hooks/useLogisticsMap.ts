@@ -18,7 +18,7 @@ export const useLogisticsMap = ({ apiKey, order, becknTrackingData }: UseLogisti
     const [locationUpdateInterval, setLocationUpdateInterval] = useState<NodeJS.Timeout | null>(null);
     const [isMapReady, setIsMapReady] = useState<boolean>(false);
 
-    // Debug logging
+    // Debug logging (only log when order changes to avoid spam)
     useEffect(() => {
         console.log('useLogisticsMap: Hook initialized with:', {
             apiKey: apiKey ? 'Present' : 'Missing',
@@ -26,7 +26,7 @@ export const useLogisticsMap = ({ apiKey, order, becknTrackingData }: UseLogisti
             order: order ? order.id : 'None',
             becknTrackingData: becknTrackingData ? 'Present' : 'None'
         });
-    }, [apiKey, order, becknTrackingData]);
+    }, [order?.id]); // Only log when order ID changes
 
     // Initialize map
     useEffect(() => {
@@ -37,12 +37,12 @@ export const useLogisticsMap = ({ apiKey, order, becknTrackingData }: UseLogisti
 
         if (!mapRef.current) {
             console.warn('useLogisticsMap: Map container not ready, will retry...');
-            // Retry after a short delay
+            // Retry after a short delay without triggering state change
             const retryTimer = setTimeout(() => {
-                if (mapRef.current) {
+                if (mapRef.current && !map) {
                     console.log('useLogisticsMap: Map container now available, retrying initialization');
-                    // Trigger re-run of this effect
-                    setMap(null);
+                    // Call initMap directly instead of triggering state change
+                    initMapDirectly();
                 }
             }, 100);
             return () => clearTimeout(retryTimer);
@@ -147,7 +147,7 @@ export const useLogisticsMap = ({ apiKey, order, becknTrackingData }: UseLogisti
                 console.log('useLogisticsMap: Cleanup - not removing script as it may be shared');
             };
         }
-    }, [apiKey, mapRef.current]);
+    }, [apiKey]);
 
     // Update map when order changes
     useEffect(() => {

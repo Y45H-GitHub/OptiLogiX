@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OptiLogix</title>
-    <link rel="icon" href="/favicon.png" />
 
-    <!-- 🚨 WARNING: This CSP disables almost all restrictions -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OptiLogix</title>
+  <link rel="icon" href="/favicon.png" />
+
+  <!-- 🚨 WARNING: This CSP disables almost all restrictions -->
+  <meta http-equiv="Content-Security-Policy" content="
         default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;
         script-src * 'unsafe-inline' 'unsafe-eval' blob:;
         style-src * 'unsafe-inline' 'unsafe-eval';
@@ -19,16 +18,17 @@
         frame-src *;
         media-src *;
         object-src *;
-      "
-    />
+      " />
 
-    <meta property="og:title" content="optilogix" />
-    <meta property="og:description" content="Project Debdeep" />
-    <meta property="og:type" content="website" />
-  </head>
+  <meta property="og:title" content="optilogix" />
+  <meta property="og:description" content="Project Debdeep" />
+  <meta property="og:type" content="website" />
+</head>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<body>
+  <div id="root"></div>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
