@@ -3,21 +3,16 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calculator, Star, Clock, Shield, DollarSign } from 'lucide-react';
+import { Calculator, Star, Clock, Shield, DollarSign, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import PaymentModal from './PaymentModal';
+import { FreightQuote as PaymentFreightQuote, ShipmentDetails, BookingData } from '@/types/payment';
 
-interface FreightQuote {
-  id: string;
-  provider: string;
-  cost: number;
-  transitTime: string;
-  reliability: number;
-  services: string[];
-  rating: number;
-}
+// Using FreightQuote from payment types for consistency
+type FreightQuote = PaymentFreightQuote;
 
 const FreightQuoteAggregator = () => {
-  const [shipmentDetails, setShipmentDetails] = useState({
+  const [shipmentDetails, setShipmentDetails] = useState<ShipmentDetails>({
     origin: '',
     destination: '',
     weight: '',
@@ -26,6 +21,9 @@ const FreightQuoteAggregator = () => {
   });
   const [quotes, setQuotes] = useState<FreightQuote[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState<FreightQuote | null>(null);
+  const [bookingData, setBookingData] = useState<BookingData | null>(null);
 
   const mockQuotes: FreightQuote[] = [
     {
@@ -73,7 +71,7 @@ const FreightQuoteAggregator = () => {
     }
 
     setLoading(true);
-    
+
     // Simulate API aggregation from multiple providers
     setTimeout(() => {
       const sortedQuotes = [...mockQuotes].sort((a, b) => {
@@ -82,7 +80,7 @@ const FreightQuoteAggregator = () => {
         const scoreB = b.cost + (100 - b.reliability) * 10;
         return scoreA - scoreB;
       });
-      
+
       setQuotes(sortedQuotes);
       setLoading(false);
       toast.success(`Found ${sortedQuotes.length} freight quotes!`);
@@ -101,6 +99,27 @@ const FreightQuoteAggregator = () => {
     return <Badge className="bg-gradient-to-r from-gray-400 to-gray-500 text-white">OPTION</Badge>;
   };
 
+  const handleBookQuote = (quote: FreightQuote) => {
+    if (!shipmentDetails.origin || !shipmentDetails.destination || !shipmentDetails.weight) {
+      toast.error('Please fill in all shipment details before booking');
+      return;
+    }
+
+    setSelectedQuote(quote);
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentSuccess = (booking: BookingData) => {
+    setBookingData(booking);
+    setIsPaymentModalOpen(false);
+    toast.success(`Booking confirmed! Reference: ${booking.bookingReference}`);
+  };
+
+  const handlePaymentModalClose = () => {
+    setIsPaymentModalOpen(false);
+    setSelectedQuote(null);
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <Card className="bg-white/90 backdrop-blur-md border-2 border-purple-200 shadow-xl">
@@ -117,7 +136,7 @@ const FreightQuoteAggregator = () => {
               <input
                 type="text"
                 value={shipmentDetails.origin}
-                onChange={(e) => setShipmentDetails({...shipmentDetails, origin: e.target.value})}
+                onChange={(e) => setShipmentDetails({ ...shipmentDetails, origin: e.target.value })}
                 placeholder="e.g., Los Angeles, CA"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               />
@@ -127,7 +146,7 @@ const FreightQuoteAggregator = () => {
               <input
                 type="text"
                 value={shipmentDetails.destination}
-                onChange={(e) => setShipmentDetails({...shipmentDetails, destination: e.target.value})}
+                onChange={(e) => setShipmentDetails({ ...shipmentDetails, destination: e.target.value })}
                 placeholder="e.g., Miami, FL"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               />
@@ -137,7 +156,7 @@ const FreightQuoteAggregator = () => {
               <input
                 type="number"
                 value={shipmentDetails.weight}
-                onChange={(e) => setShipmentDetails({...shipmentDetails, weight: e.target.value})}
+                onChange={(e) => setShipmentDetails({ ...shipmentDetails, weight: e.target.value })}
                 placeholder="e.g., 1200"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               />
@@ -147,7 +166,7 @@ const FreightQuoteAggregator = () => {
               <input
                 type="text"
                 value={shipmentDetails.dimensions}
-                onChange={(e) => setShipmentDetails({...shipmentDetails, dimensions: e.target.value})}
+                onChange={(e) => setShipmentDetails({ ...shipmentDetails, dimensions: e.target.value })}
                 placeholder="L x W x H (in)"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               />
@@ -156,7 +175,7 @@ const FreightQuoteAggregator = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Cargo Type</label>
               <select
                 value={shipmentDetails.type}
-                onChange={(e) => setShipmentDetails({...shipmentDetails, type: e.target.value})}
+                onChange={(e) => setShipmentDetails({ ...shipmentDetails, type: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               >
                 <option value="general">General Cargo</option>
@@ -166,7 +185,7 @@ const FreightQuoteAggregator = () => {
               </select>
             </div>
           </div>
-          <Button 
+          <Button
             onClick={fetchQuotes}
             disabled={loading}
             className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
@@ -188,9 +207,9 @@ const FreightQuoteAggregator = () => {
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1">
                     {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className={`w-4 h-4 ${i < Math.floor(quote.rating) ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} 
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${i < Math.floor(quote.rating) ? 'text-yellow-500 fill-current' : 'text-gray-300'}`}
                       />
                     ))}
                   </div>
@@ -209,7 +228,7 @@ const FreightQuoteAggregator = () => {
                       <span className="text-sm text-gray-600">{quote.transitTime}</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-purple-600" />
                     <span className="text-sm text-gray-600">Reliability:</span>
@@ -229,7 +248,10 @@ const FreightQuoteAggregator = () => {
                     </div>
                   </div>
 
-                  <Button className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                  <Button
+                    onClick={() => handleBookQuote(quote)}
+                    className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
+                  >
                     Book with {quote.provider}
                   </Button>
                 </div>
@@ -237,6 +259,58 @@ const FreightQuoteAggregator = () => {
             </Card>
           ))}
         </div>
+      )}
+
+      {/* Booking Confirmation */}
+      {bookingData && (
+        <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-green-800 flex items-center gap-2">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+              Booking Confirmed!
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-600">Booking Reference:</span>
+                  <div className="font-bold text-lg text-green-700">{bookingData.bookingReference}</div>
+                </div>
+                <div>
+                  <span className="text-gray-600">Payment ID:</span>
+                  <div className="font-mono text-sm text-gray-800">{bookingData.paymentId}</div>
+                </div>
+                <div>
+                  <span className="text-gray-600">Amount Paid:</span>
+                  <div className="font-semibold text-green-700">₹{bookingData.amount.toLocaleString()}</div>
+                </div>
+                <div>
+                  <span className="text-gray-600">Status:</span>
+                  <Badge className="bg-green-100 text-green-800 ml-2">
+                    {bookingData.status.toUpperCase()}
+                  </Badge>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-green-100 rounded-lg">
+                <p className="text-sm text-green-800">
+                  Your freight booking has been confirmed. You will receive tracking details via email shortly.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Payment Modal */}
+      {selectedQuote && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={handlePaymentModalClose}
+          quote={selectedQuote}
+          shipmentDetails={shipmentDetails}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
       )}
     </div>
   );

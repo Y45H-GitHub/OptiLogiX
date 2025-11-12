@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: optilogix-backend
+    runtime: node
+    buildCommand: rm -rf node_modules package-lock.json && npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5055

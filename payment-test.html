@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway Comparison</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .amount-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .amount-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 15px;
+        }
+
+        .amount-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .amount-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .amount-btn:hover {
+            border-color: #2c5aa0;
+            background: #f0f7ff;
+        }
+
+        .amount-btn.active {
+            background: #2c5aa0;
+            color: white;
+            border-color: #2c5aa0;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .payment-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .razorpay-btn {
+            background: linear-gradient(45deg, #3399cc, #2980b9);
+            color: white;
+        }
+
+        .razorpay-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(51, 153, 204, 0.3);
+        }
+
+        .paytm-btn {
+            background: linear-gradient(45deg, #00baf2, #0099cc);
+            color: white;
+        }
+
+        .paytm-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 186, 242, 0.3);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .result {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .comparison {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .comparison h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .gateway-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .gateway-info h4 {
+            margin-bottom: 10px;
+            color: #2c5aa0;
+        }
+
+        .gateway-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .gateway-info li {
+            padding: 3px 0;
+            color: #555;
+        }
+
+        .gateway-info li:before {
+            content: "✓ ";
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .payment-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>💳 Payment Gateway Test</h1>
+        <p class="subtitle">Compare Razorpay vs Paytm</p>
+
+        <div class="amount-section">
+            <div class="amount-display">₹<span id="amount-display">100</span></div>
+            <div class="amount-selector">
+                <button class="amount-btn active" onclick="setAmount(100)">₹100</button>
+                <button class="amount-btn" onclick="setAmount(500)">₹500</button>
+                <button class="amount-btn" onclick="setAmount(1000)">₹1000</button>
+                <button class="amount-btn" onclick="setAmount(2000)">₹2000</button>
+            </div>
+        </div>
+
+        <div class="payment-buttons">
+            <button class="payment-btn razorpay-btn" id="razorpay-btn" onclick="payWithRazorpay()">
+                <span id="razorpay-text">Pay with Razorpay</span>
+            </button>
+            <button class="payment-btn paytm-btn" id="paytm-btn" onclick="payWithPaytm()">
+                <span id="paytm-text">Pay with Paytm</span>
+            </button>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <div class="comparison">
+            <h3>🔍 Gateway Comparison</h3>
+            <div class="comparison-grid">
+                <div class="gateway-info">
+                    <h4>🟦 Razorpay</h4>
+                    <ul>
+                        <li>Inline checkout (no redirect)</li>
+                        <li>Instant verification</li>
+                        <li>Better UX for cards</li>
+                        <li>Strong UPI support</li>
+                        <li>Real-time status</li>
+                    </ul>
+                </div>
+                <div class="gateway-info">
+                    <h4>🟨 Paytm</h4>
+                    <ul>
+                        <li>Redirects to Paytm page</li>
+                        <li>Callback verification</li>
+                        <li>Strong wallet integration</li>
+                        <li>Popular in India</li>
+                        <li>Multiple payment options</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAmount = 100;
+
+        function setAmount(amount) {
+            currentAmount = amount;
+            document.getElementById('amount-display').textContent = amount;
+
+            // Update active button
+            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function showResult(message, isSuccess = true) {
+            const result = document.getElementById('result');
+            result.className = `result ${isSuccess ? 'success' : 'error'}`;
+            result.innerHTML = message;
+            result.style.display = 'block';
+
+            setTimeout(() => {
+                result.style.display = 'none';
+            }, 5000);
+        }
+
+        function setLoading(gateway, isLoading) {
+            const btn = document.getElementById(`${gateway}-btn`);
+            const text = document.getElementById(`${gateway}-text`);
+
+            if (isLoading) {
+                btn.disabled = true;
+                text.innerHTML = '<span class="loading"></span>Processing...';
+            } else {
+                btn.disabled = false;
+                text.textContent = gateway === 'razorpay' ? 'Pay with Razorpay' : 'Pay with Paytm';
+            }
+        }
+
+        async function payWithRazorpay() {
+            try {
+                setLoading('razorpay', true);
+
+                // Create order
+                const response = await fetch('http://localhost:5055/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: currentAmount })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create order');
+                }
+
+                const order = await response.json();
+
+                // Open Razorpay checkout
+                const options = {
+                    key: 'rzp_test_R8H74AbGwxIH19', // Your Razorpay key
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: 'OptiLogix Payment Test',
+                    description: 'Testing Razorpay Gateway',
+                    order_id: order.id,
+                    handler: async function (response) {
+                        try {
+                            // Verify payment
+                            const verifyResponse = await fetch('http://localhost:5055/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(response)
+                            });
+
+                            const result = await verifyResponse.json();
+
+                            if (result.success) {
+                                showResult(`
+                                    <h4>✅ Razorpay Payment Successful!</h4>
+                                    <p><strong>Order ID:</strong> ${order.id}</p>
+                                    <p><strong>Payment ID:</strong> ${response.razorpay_payment_id}</p>
+                                    <p><strong>Amount:</strong> ₹${currentAmount}</p>
+                                    <p><strong>Experience:</strong> Smooth inline checkout ⭐⭐⭐⭐⭐</p>
+                                `, true);
+                            } else {
+                                showResult(`❌ Payment verification failed: ${result.message}`, false);
+                            }
+                        } catch (error) {
+                            showResult(`❌ Verification error: ${error.message}`, false);
+                        }
+                        setLoading('razorpay', false);
+                    },
+                    modal: {
+                        ondismiss: function () {
+                            setLoading('razorpay', false);
+                            showResult('❌ Payment cancelled by user', false);
+                        }
+                    },
+                    theme: {
+                        color: '#3399cc'
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+
+            } catch (error) {
+                setLoading('razorpay', false);
+                showResult(`❌ Razorpay Error: ${error.message}`, false);
+            }
+        }
+
+        async function payWithPaytm() {
+            try {
+                setLoading('paytm', true);
+
+                const orderId = 'ORDER_' + Date.now();
+                const customerId = 'CUST_' + Date.now();
+
+                // Initiate Paytm payment
+                const response = await fetch('http://localhost:5055/paytm/initiate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: currentAmount,
+                        customerId,
+                        orderId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to initiate Paytm payment');
+                }
+
+                const paytmData = await response.json();
+
+                // Create form and submit to Paytm
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = paytmData.paytmUrl;
+                form.target = '_blank'; // Open in new tab
+
+                Object.keys(paytmData).forEach(key => {
+                    if (key !== 'paytmUrl') {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = paytmData[key];
+                        form.appendChild(input);
+                    }
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+
+                setLoading('paytm', false);
+
+                showResult(`
+                    <h4>🔄 Redirected to Paytm!</h4>
+                    <p><strong>Order ID:</strong> ${orderId}</p>
+                    <p><strong>Amount:</strong> ₹${currentAmount}</p>
+                    <p><strong>Experience:</strong> Redirected to external page ⭐⭐⭐</p>
+                    <p>Complete payment on the Paytm page that opened.</p>
+                    <p><em>Note: Paytm requires page redirect for security.</em></p>
+                `, true);
+
+            } catch (error) {
+                setLoading('paytm', false);
+                showResult(`❌ Paytm Error: ${error.message}`, false);
+            }
+        }
+
+        // Check backend status on load
+        window.onload = async function () {
+            try {
+                const response = await fetch('http://localhost:5055/health');
+                const data = await response.json();
+                console.log('Backend Status:', data);
+            } catch (error) {
+                showResult(`⚠️ Backend not running. Start with: cd backend && npm start`, false);
+            }
+        };
+    </script>
+</body>
+
+</html>

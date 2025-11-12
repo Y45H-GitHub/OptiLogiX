@@ -173,7 +173,7 @@ const mockNotifications: Notification[] = [
             id: 'email-h001',
             status: 'sent' as const,
             timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000),
-            recipient: 'yashchmckv@gmail.com'
+            recipient: 'sarah.johnson@example.com'
         }
     },
     // Historical rejected order
@@ -193,7 +193,7 @@ const mockNotifications: Notification[] = [
             id: 'email-h002',
             status: 'sent' as const,
             timestamp: new Date(Date.now() - 30 * 60 * 60 * 1000),
-            recipient: 'yashchmckv@gmail.com'
+            recipient: 'mike.chen@example.com'
         }
     }
 ];

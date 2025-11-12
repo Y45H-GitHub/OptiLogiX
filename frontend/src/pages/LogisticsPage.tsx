@@ -170,11 +170,13 @@ const LogisticsPage: React.FC = () => {
         // Try to fetch BECKN tracking data
         try {
           const becknData = await becknTrackingService.trackOrder(orderId);
+          console.log('BECKN Data received:', becknData); // Debug log
           setBecknTrackingData(becknData);
 
           // Subscribe to real-time updates if BECKN data is available
           if (becknData) {
             becknTrackingService.subscribeToUpdates(orderId, (updatedData) => {
+              console.log('BECKN Data updated:', updatedData); // Debug log
               setBecknTrackingData(updatedData);
             });
           }
@@ -661,7 +663,7 @@ const LogisticsPage: React.FC = () => {
                                 <span className="font-medium text-gray-900">Current Status</span>
                               </div>
                               <p className="text-lg font-semibold text-blue-700 capitalize">
-                                {becknTrackingData.status ? becknTrackingData.status.replace('_', ' ') : 'Unknown'}
+                                {becknTrackingData?.status ? becknTrackingData.status.replace('_', ' ') : 'Unknown'}
                               </p>
                             </div>
 
@@ -672,7 +674,7 @@ const LogisticsPage: React.FC = () => {
                                 <span className="font-medium text-gray-900">Estimated Delivery</span>
                               </div>
                               <p className="text-lg font-semibold text-green-700">
-                                {formatDate(becknTrackingData.estimatedDelivery)}
+                                {becknTrackingData?.estimatedDelivery ? formatDate(becknTrackingData.estimatedDelivery) : 'Not available'}
                               </p>
                             </div>
 

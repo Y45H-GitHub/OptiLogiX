@@ -1,7 +1,7 @@
 {
   "name": "optilogix",
   "version": "1.0.0",
-  "description": "Team DR presents: OptiLogix – Our smart Supply Chain Management System developed at the Code Cubicle Hackathon! # OptiLogix: Revolutionizing Supply Chain Management",
+  "description": "OptiLogix – A smart Supply Chain and Logistics Management System",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
