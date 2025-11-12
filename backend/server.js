@@ -6,7 +6,22 @@ const bodyParser = require("body-parser");
 require("dotenv").config(); // <-- Load .env variables
 
 const app = express();
-app.use(cors());
+
+// CORS configuration for production
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? [
+      'https://optilogix.vercel.app',
+      'https://optilogix-y45h.vercel.app',
+      /\.vercel\.app$/  // Allow all Vercel preview deployments
+    ]
+    : '*',  // Allow all origins in development
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Initialize Razorpay instance with env variables

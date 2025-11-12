@@ -30,3 +30,6 @@ yarn.lock
 
 # Optional: ignore n8n data if using self-hosted
 .n8n/
+
+# Ignore documentation and notes folder
+md/
