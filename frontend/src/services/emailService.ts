@@ -238,13 +238,13 @@ Please review the rejection reason and resubmit if necessary.
     private getRequestorEmail(requestorName: string): string {
         // In a real app, this would lookup the user's email from a database
         const emailMap: { [key: string]: string } = {
-            'John Smith': 'yashchmckv@gmail.com',
-            'Sarah Johnson': 'yashchmckv@gmail.com',
-            'Mike Chen': 'yashchmckv@gmail.com',
-            'Lisa Wang': 'yashchmckv@gmail.com'
+            'John Smith': 'john.smith@example.com',
+            'Sarah Johnson': 'sarah.johnson@example.com',
+            'Mike Chen': 'mike.chen@example.com',
+            'Lisa Wang': 'lisa.wang@example.com'
         };
 
-        return emailMap[requestorName] || `yashchmckv@gmail.com`;
+        return emailMap[requestorName] || `${requestorName.toLowerCase().replace(' ', '.')}@example.com`;
     }
 
     // Get email queue status

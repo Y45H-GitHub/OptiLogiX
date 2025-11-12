@@ -1,5 +1,3 @@
-Team MCKV presents: OptiLogix – Our smart Supply Chain and Logistics Management System build at Infosys Global Hackathon
-Challenge 4 - TrackSmart: Universal Logistics Visibility Platform
 # OptiLogix: Revolutionizing Supply Chain Management
 
 OptiLogix is a comprehensive, cutting-edge solution designed to reimagine and optimize the entire supply chain flow, from supplier to customer. Leveraging advanced technology and seamless design, OptiLogix aims to boost efficiency, enhance collaboration, and drive innovation in the logistics industry.
@@ -117,11 +115,3 @@ We welcome contributions! Please see `CONTRIBUTING.md` for details on how to get
 ## 📄 License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
-
-## 💡 Built by Team MCKV
-
-With passion and precision.
-
-
-HERE IS AN ANIMATED VIDEO DEMONSTRATION OF HOW IT WOULD WORK IN REAL TIME(HOPE YOU WILL ALL ENJOY)
-https://drive.google.com/file/d/1uleE5HD0E2a2JuXFddS58-TXnLaJbXPw/view?usp=drivesdk

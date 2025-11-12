@@ -18,7 +18,7 @@ def send_email():
     if not data:
         return jsonify({'status': 'error', 'message': 'Invalid JSON'}), 400
 
-    receiver_email = "yashchmckv@gmail.com"
+    receiver_email = data.get('receiver_email')
     subject = data.get('subject')
     body = data.get('body')
 
@@ -32,7 +32,7 @@ def send_email():
 
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
-    msg['To'] = "yashchmckv@gmail.com"
+    msg['To'] = receiver_email
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain'))
 
